@@ -7,7 +7,7 @@ class Carro{
     private int anoDeFabricacao = 0;
 
     // Construtor com argumentos
-    public Carro(string marca, string modelo, int anoDeFabricacao){
+    public Carro(string marca, string modelo, int anoDeFabricacao=2010){
         this.marca = marca;
         this.modelo = modelo;
         this.anoDeFabricacao = anoDeFabricacao;
