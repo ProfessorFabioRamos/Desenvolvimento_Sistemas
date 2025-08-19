@@ -1,43 +1,43 @@
 abstract class Animal{
-    // Protected = publico dentro da família da Herança
-    //protected string Nome{get;set;} = "";
-    public string Nome{get;set;}
+    public string Nome{get;init;} = "";
 
-    //Método abstrato (precisa ser implementado na subclasse)
     public abstract void EmitirSom();
-       
+
     public virtual void Comer(){
-        Console.WriteLine($"Animal: {Nome} está comendo");
+        Console.WriteLine($"Animal {Nome} está comendo");
     }
 }
 
-// Subclasse
 class Cachorro : Animal{
-    private string raca;
-
+    private string raca = "";
     public string Raca{
         get{return raca;}
         set{raca = value;}
     }
 
-    //É obrigado pela classe base a implementar
+    public Cachorro(string nomeAnimal, string racaCachorro){
+        Nome = nomeAnimal;
+        Raca = racaCachorro;
+    }
+
+    // É obrigado pela classe base a implementar
     public override void EmitirSom(){
         Console.WriteLine("Au Au");
     }
 
     public override void Comer(){
         base.Comer();
-        Console.WriteLine($"{Nome} está satisfeito");
+        Console.WriteLine($"{Nome} está comendo ração.");
     }
 }
 
 class Program{
-    public static void Main(string[] args){
-        Cachorro cachorro_1 = new Cachorro();
-        cachorro_1.Nome = "Jorge";
-        cachorro_1.Raca = "Lulu";
+    public static void Main(string[] args){       
+        Cachorro cachorro_1 = new Cachorro("Jorge","Lulu");
+        //cachorro_1.Nome = "Totó";
+        cachorro_1.Raca = "Basset Hound";
         cachorro_1.EmitirSom();
         cachorro_1.Comer();
-        Console.WriteLine($"{cachorro_1.Nome} é da raça {cachorro_1.Raca}");
+        Console.WriteLine($"Nome do cachorro: {cachorro_1.Nome}\nRaça: {cachorro_1.Raca}");
     }
 }
