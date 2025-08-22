@@ -1,43 +1,45 @@
 abstract class Animal{
-    public string Nome{get;init;} = "";
+    public string Nome {protected get;init;} = "";
 
     public abstract void EmitirSom();
 
     public virtual void Comer(){
-        Console.WriteLine($"Animal {Nome} está comendo");
+        Console.WriteLine($"{Nome} está comendo.");
     }
 }
 
 class Cachorro : Animal{
-    private string raca = "";
+    private string raca ="";
+
     public string Raca{
         get{return raca;}
         set{raca = value;}
     }
 
-    public Cachorro(string nomeAnimal, string racaCachorro){
-        Nome = nomeAnimal;
-        Raca = racaCachorro;
+    public Cachorro(string nomeDoAnimal, string racaDoCachorro){
+        Nome = nomeDoAnimal;
+        raca = racaDoCachorro;
     }
 
-    // É obrigado pela classe base a implementar
+    //Sobrescrita Polimorfismo Dinâmico
     public override void EmitirSom(){
         Console.WriteLine("Au Au");
     }
 
     public override void Comer(){
         base.Comer();
-        Console.WriteLine($"{Nome} está comendo ração.");
+        Console.WriteLine($"{Nome} da raça {Raca} está comendo ração.");
     }
 }
 
 class Program{
-    public static void Main(string[] args){       
+    public static void Main(string[] args){
         Cachorro cachorro_1 = new Cachorro("Jorge","Lulu");
         //cachorro_1.Nome = "Totó";
         cachorro_1.Raca = "Basset Hound";
         cachorro_1.EmitirSom();
         cachorro_1.Comer();
-        Console.WriteLine($"Nome do cachorro: {cachorro_1.Nome}\nRaça: {cachorro_1.Raca}");
+        //cachorro_1.Nome é protected, ou seja private dentro da família de Animal
+        //Console.WriteLine($"Nome do cachorro: {cachorro_1.Nome}\nRaça: {cachorro_1.Raca}");
     }
 }
