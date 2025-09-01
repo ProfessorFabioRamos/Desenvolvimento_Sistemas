@@ -20,9 +20,9 @@ namespace MinhaAPI.Controllers{
     }
     public record class CreateTodoDto{
         [Required, MinLength(3)]
-        public string Title {get;set;} = string.Empty;
+        public string Title {get;init;} = string.Empty;
         [Range(0,5)]
-        public int Priority{get;set;}
+        public int Priority{get;init;}
     }
     public record Todo(int Id,string Title, int Priority, bool Done);
 }
