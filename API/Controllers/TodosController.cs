@@ -45,6 +45,14 @@ public class TodosController : ControllerBase{
         Todos[idx] = updated;
         return Ok(updated);
     }
+
+    [HttpDelete("{id:int}")] // Remove a task por Id
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult Delete(int id){
+        var removed = Todos.RemoveAll(t=>t.Id ==id);
+        return removed == 0 ? NotFound():NoContent();
+    }
 }
 public record class CreateTodoDto{
     [Required, MinLength(3)]
