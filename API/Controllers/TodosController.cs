@@ -1,41 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace MinhaPrimeiraApi.Controllers;
+namespace MinhaAPI.Controllers;
 
 [ApiController]
-[Route("todos")] // base path comum
-public class TodosController : ControllerBase
-{
+[Route("todos")]
+public class TodosController : ControllerBase{
     private static readonly List<Todo> Todos = new();
     private static int _nextId = 1;
-
-    // GET /todos  -> lista todos
+    // Get com a rota "todos", pega todos os "ToDos"
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<IEnumerable<Todo>> GetAll()
         => Ok(Todos);
+    
+    [HttpGet("{id:int}")] // Pega por Id
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<Todo> GetById(int id){
+        var todo = Todos.FirstOrDefault(t=>t.Id ==id);
+        return todo is null ? NotFound():Ok(todo);
+    }
 
-    // POST /todos -> cria
+    // Post com a rota "todos"
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult Create([FromBody] CreateTodoDto dto)
-    {
-        // [ApiController] já valida DataAnnotations e devolve 400 se inválido
-        var todo = new Todo(_nextId++, dto.Title.Trim(), dto.Priority, false);
+    public IActionResult Create([FromBody] CreateTodoDto dto){
+        var todo = new Todo(_nextId++,dto.Title.Trim(), dto.Priority,false);
         Todos.Add(todo);
-        return Created($"/todos/{todo.Id}", todo);
+        return Created($"/todos/{todo.Id}",todo);
     }
 }
-
-public record class CreateTodoDto
-{
+public record class CreateTodoDto{
     [Required, MinLength(3)]
-    public string Title { get; init; } = string.Empty;
-
-    [Range(0, 5)]
-    public int Priority { get; init; }
+    public string Title {get;init;} = string.Empty;
+    [Range(0,5)]
+    public int Priority{get;init;}
 }
-
-public record Todo(int Id, string Title, int Priority, bool Done);
+public record Todo(int Id,string Title, int Priority, bool Done);
