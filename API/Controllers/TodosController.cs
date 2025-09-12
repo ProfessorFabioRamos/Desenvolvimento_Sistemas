@@ -32,11 +32,31 @@ public class TodosController : ControllerBase{
         Todos.Add(todo);
         return Created($"/todos/{todo.Id}",todo);
     }
+
+    [HttpPut("{id:int}")] // atualiza substituindo completamente
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult Replace(int id, [FromBody] UpdateTodoDto dto){
+        var idx = Todos.FindIndex(t=> t.Id ==id);
+        if(idx <0) return NotFound();
+
+        var updated = new Todo(id,dto.Title.Trim(),dto.Priority,dto.Done);
+        Todos[idx] = updated;
+        return Ok(updated);
+    }
 }
 public record class CreateTodoDto{
     [Required, MinLength(3)]
     public string Title {get;init;} = string.Empty;
     [Range(0,5)]
     public int Priority{get;init;}
+}
+public record class UpdateTodoDto{
+    [Required, MinLength(3)]
+    public string Title {get;init;} = string.Empty;
+    [Range(0,5)]
+    public int Priority{get;init;}
+    public bool Done{get;init;}
 }
 public record Todo(int Id,string Title, int Priority, bool Done);
