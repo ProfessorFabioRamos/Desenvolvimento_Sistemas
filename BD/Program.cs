@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Escola.Data;
 using Escola.Models;
+using System.Data.Common;
 
 Console.WriteLine("--Escola DB--");
 Console.WriteLine("Inicializando/migrando o banco...");
@@ -9,8 +10,8 @@ var db = new AppDbContext();
 // garante que o banco estáa criado e com migrações publicadas
 await db.Database.MigrateAsync();
 
-var name = "Maria";
-var email = "maria@gmail.com";
+var name = "joãozinho";
+var email = "joaozinho@gmail.com";
 
 // Verificação simples para evitar duplicidade de email
 var exists = await db.Students.AnyAsync(s=> s.Email == email);
@@ -28,3 +29,16 @@ db.Students.Add(student);
 await db.SaveChangesAsync();
 
 Console.WriteLine($"Cadastro com sucesso! Id: {student.Id}");
+
+var lista_estudantes = await db.Students
+    .OrderBy(s=> s.Id)
+    .ToListAsync();
+
+if(lista_estudantes.Count == 0){
+    Console.WriteLine("Nenhum estudante encontrado.");
+    return;
+}
+
+foreach(var s in lista_estudantes){
+    Console.WriteLine($"{s.Id} | {s.Name} | {s.Email} | {s.EnrollmentDate}");
+}
