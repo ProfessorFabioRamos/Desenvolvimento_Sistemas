@@ -1,0 +1,14 @@
+dotnet new console -n EscolaDB
+cd .\EscolaDB\ 
+
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet new tool-manifest
+dotnet tool install dotnet-ef
+
+// Depois de criar todo o código rodar apenas uma vez
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
+dotnet run
