@@ -10,8 +10,8 @@ var db = new AppDbContext();
 // garante que o banco estáa criado e com migrações publicadas
 await db.Database.MigrateAsync();
 
-var name = "joãozinho";
-var email = "joaozinho@gmail.com";
+var name = "b";
+var email = "b@gmail.com";
 
 // Verificação simples para evitar duplicidade de email
 var exists = await db.Students.AnyAsync(s=> s.Email == email);
@@ -40,5 +40,5 @@ if(lista_estudantes.Count == 0){
 }
 
 foreach(var s in lista_estudantes){
-    Console.WriteLine($"{s.Id,2} | {s.Name,-20} | {s.Email,-24} | {s.EnrollmentDate}");
+    Console.WriteLine($"{s.Id,2} | {s.Name,-20} | {s.Email,-24} | {s.EnrollmentDate:yyyy-MM-dd HH:mm:ss}");
 }
