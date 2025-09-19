@@ -40,5 +40,5 @@ if(lista_estudantes.Count == 0){
 }
 
 foreach(var s in lista_estudantes){
-    Console.WriteLine($"{s.Id} | {s.Name} | {s.Email} | {s.EnrollmentDate}");
+    Console.WriteLine($"{s.Id,2} | {s.Name,-20} | {s.Email,-24} | {s.EnrollmentDate}");
 }
