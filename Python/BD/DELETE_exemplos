@@ -1,0 +1,39 @@
+import sqlite3
+
+conexao = sqlite3.connect('loja.db')
+cursor = conexao.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS pedidos(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    valor REAL CHECK (valor>0),
+    status TEXT CHECK (status IN('pendente','concluido','cancelado'))
+    )           
+""")
+
+cursor.execute("""INSERT INTO pedidos (cliente_id,valor,status) VALUES
+    (45, 45.33,'concluido'),
+    (45, 78.96,'pendente'),
+    (23, 56.25,'pendente'),
+    (23, 78.21,'cancelado'),
+    (14, 75.12,'concluido'),
+    (87, 12.33,'cancelado')
+""")
+
+# Deleta com base no ID
+#cursor.execute("DELETE FROM pedidos WHERE id = 3")
+# Deletar com base em um critério
+#cursor.execute("DELETE FROM pedidos WHERE status = 'cancelado'")
+# Deletar com base em um critério numérico
+#cursor.execute("DELETE FROM pedidos WHERE valor < 70")
+# Deletar todos os registros
+#cursor.execute("DELETE FROM pedidos")
+# Reseta o contador de auto incremento para a tabela pedidos
+#cursor.execute("DELETE FROM sqlite_sequence WHERE name= 'pedidos'")
+
+
+conexao.commit()
+# Reseta ids /depois do comando commit
+#cursor.execute("VACUUM;")
+conexao.close()
