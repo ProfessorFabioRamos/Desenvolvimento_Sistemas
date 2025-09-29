@@ -13,7 +13,7 @@ def iniciar_banco():
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       nome TEXT UNIQUE NOT NULL,
       tipo TEXT NOT NULL,
-      valor INTEGER
+      valor REAL
       )
   """)
 
