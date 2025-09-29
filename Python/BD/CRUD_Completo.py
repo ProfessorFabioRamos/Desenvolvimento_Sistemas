@@ -1,4 +1,6 @@
 import sqlite3
+conexao = sqlite3.connect("Inventario.db")
+cursor = conexao.cursor()
 
 # Função para criar tabela
 def iniciar_banco():
