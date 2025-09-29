@@ -10,6 +10,17 @@ def mostrar_menu():
     print("4 - Excluir Item")
     print("0 - Sair")
 
+def insert():
+    nome = input("Digite o nome do item: ").strip()
+    tipo = input("Digite o tipo do item: ").strip()
+    try:
+        valor = float(input("Digite o valor do item: "))
+    except ValueError:
+        print("Valor inválido. Use um valor float")
+        return
+    
+    inventario.inserir_item(nome,tipo,valor)
+
 def main():
     inventario.iniciar_banco()
     while(True):
@@ -17,7 +28,7 @@ def main():
         opcao = input("Digite a opção:")
         match opcao:
             case "1":
-                print("Inserir dados")  #Placeholder
+                insert()
             case "2":
                 print("Listar dados")   #Placeholder
             case "3":
