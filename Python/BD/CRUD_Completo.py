@@ -1,4 +1,5 @@
 import sqlite3
+
 conexao = sqlite3.connect("Inventario.db")
 cursor = conexao.cursor()
 
@@ -52,5 +53,6 @@ def excluir_item(id_item):
     else:
         print("Item não encontrado!")
 
-conexao.commit()
-conexao.close()
+def fechar_banco():
+    conexao.commit()
+    conexao.close()
