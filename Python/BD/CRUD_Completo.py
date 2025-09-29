@@ -41,6 +41,7 @@ def atualizar_item(id_item,novo_nome,novo_tipo, novo_valor):
     
     if cursor.rowcount > 0:
         print("Item atualizado com sucesso!")
+        conexao.commit()
     else:
         print("Item não encontrado!")
 
@@ -50,6 +51,7 @@ def excluir_item(id_item):
 
     if cursor.rowcount > 0:
         print("Item excluido com sucesso!")
+        conexao.commit()
     else:
         print("Item não encontrado!")
 
