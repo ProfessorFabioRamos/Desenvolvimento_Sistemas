@@ -11,4 +11,7 @@ dotnet tool install dotnet-ef
 dotnet ef migrations add InitialCreate
 dotnet ef database update
 
+// Adicionar biblioteca de API
+dotnet add package Swashbuckle.AspNetCore
+
 dotnet run
