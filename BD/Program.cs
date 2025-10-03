@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SchoolDbLab.Data;
-using SchoolDbLab.Models;
+using Escola.Data;
+using Escola.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
