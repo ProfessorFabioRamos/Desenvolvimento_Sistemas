@@ -1,5 +1,5 @@
-dotnet new console -n EscolaDB
-cd .\EscolaDB\ 
+dotnet new console -n EscolaDB (utilizar nome personalizado)
+cd .\EscolaDB\  (utilizar nome personalizado)
 
 dotnet add package Microsoft.EntityFrameworkCore
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite
