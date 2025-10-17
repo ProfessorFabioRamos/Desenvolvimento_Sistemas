@@ -1,4 +1,3 @@
-// INCOMPLETO!!!!!!!!!!!!!!!!!!
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Escola.Data;
@@ -152,4 +151,114 @@ async Task DeleteStudentAsync()
     db.Students.Remove(student);
     await db.SaveChangesAsync();
     Console.WriteLine("Estudante removido com sucesso.");
+}
+
+async Task CreateCourseAsync(){
+    Console.WriteLine("Nome do curso: ");
+    var name = (Console.ReadLine() ?? "").Trim();
+
+    if(string.IsNullOrWhiteSpace(name)){
+        Console.WriteLine("Nome é obrigatório.");
+        return;
+    }
+
+    using var db = new AppDbContext();
+    if(await db.Courses.AnyAsync(c=>c.Name == name)){
+        Console.WriteLine("Curso já existe.");
+        return;
+    }
+
+    var course = new Course{Name = name};
+    db.Courses.Add(course);
+    await db.SaveChangesAsync();
+    Console.WriteLine($"Curso criado! Id: {course.Id}");
+}
+
+async Task EnrollStudentInCourseAsync(){
+    Console.Write("Id do aluno: ");
+    if(!int.TryParse(Console.ReadLine(), out var sid)){
+        Console.WriteLine("Id do aluno inválido.");
+        return;
+    }
+
+    Console.Write("Id do curso: ");
+    if(!int.TryParse(Console.ReadLine(), out var cid)){
+        Console.WriteLine("Id do curso inválido.");
+        return;
+    }
+
+    using var db = new AppDbContext();
+
+    var student = await db.Students.FindAsync(sid); 
+    var course = await db.Courses.FindAsync(cid); 
+    if(student is null || course is null){
+        Console.WriteLine("Aluno ou curso não encontrado");
+        return;
+    }
+    var exists = await db.StudentCourses.AnyAsync(sc=>sc.StudentId ==sid && sc.CourseId == cid);
+    if(exists){
+        Console.WriteLine("Aluno já matriculado neste curso");
+        return;
+    }
+    db.StudentCourses.Add(new StudentCourse{StudentId = sid, CourseId = cid});
+    await db.SaveChangesAsync();
+    Console.WriteLine($"Matriculado:{student.Name} no curso {course.Name}");
+}
+async Task ListCoursesWithStudentsAsync(){
+    using var db = new AppDbContext();
+    //INNER JOIN
+    var rows = await(
+        from c in db.Courses
+        join sc in db.StudentCourses on c.Id equals sc.CourseId
+        join s in db.Students on sc.StudentId equals s.Id
+        orderby c.Name, s.Name
+        select new {Course = c.Name, Student = s.Name, s.Email}
+    ).ToListAsync();
+
+    if(rows.Count ==0){
+        Console.WriteLine("Nenhuma matrícula encontrada");
+        return;
+    }
+
+    string current = "";
+    foreach(var r in rows){
+        if(current != r.Course){
+            current = r.Course;
+            Console.WriteLine($"\nCurso: {current}");
+            Console.WriteLine(" Alunos:");
+        }
+        Console.WriteLine($"    -{r.Student} ({r.Email})");
+    }
+    Console.WriteLine();
+}
+
+async Task ListStudentsByCourseAsync(){
+    Console.WriteLine("Id do Curso");
+    if(!int.TryParse(Console.ReadLine(), out var cid)){
+        Console.WriteLine("Id inválido.");
+        return;
+    }
+
+    using var db = new AppDbContext();
+    var course = await db.Courses.FindAsync(cid);
+    if(course is null){
+        Console.WriteLine("Curso não encontrado.");
+        return;
+    }
+
+    var students = await(
+        from sc in db.StudentCourses
+        join s in db.Students on sc.StudentId equals s.Id
+        where sc.CourseId ==cid
+        orderby s.Name
+        select new {s.Name, s.Email}
+        ).ToListAsync();
+
+    Console.WriteLine($"\nCurso: {course.Name}");
+    if(students.Count ==0){
+        Console.WriteLine("  (sem alunos)");
+        return;
+    }
+    foreach(var st in students)
+        Console.WriteLine($"  - {st.Name} ({st.Email})");
 }
