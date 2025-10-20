@@ -10,12 +10,16 @@ root.title("Aula 1 Tk")
 # Define o tamanho da janela (largura x altura)
 root.geometry("300x150")
 
+# Cor do background
+root.configure(bg="#42f5ef")
+
 # Função a ser chamada quando botão for pressionado
 def on_button_click():
     label.config(text = "Bem-vindo!")
 
 # Cria um widget Label(rótulo) dentro da janela Root
-label = tk.Label(root, text="Olá Mundo!", font = ("Arial, 14"))
+label = tk.Label(root, text="Olá Mundo!", font = 
+                 ("Comic Sans MS", 14, "bold","italic","underline"),bg="#42f5ef")
 # Posiciona o label no centro, com espaçamento vertical
 label.pack(pady=10)
 
