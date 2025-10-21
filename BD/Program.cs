@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlite("Data Source=school.db"));
+    opt.UseSqlite("Data Source=escola.db"));
 
 var app = builder.Build();
 
