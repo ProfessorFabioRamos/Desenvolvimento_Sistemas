@@ -6,5 +6,5 @@ public class Student{
     public string Email {get;set;} = "";
     public DateTime EnrollmentDate {get;set;} = DateTime.UtcNow;
 
-    public List<StudentCourse> Enrollments{get;set;} = new();
+    public List<StudentCourse> StudentCourses{get;set;} = new();
 }
