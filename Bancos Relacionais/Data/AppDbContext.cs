@@ -33,16 +33,21 @@ public class AppDbContext : DbContext{
             e.HasIndex(c=>c.Name).IsUnique();
         });
 
-        //StudentCourse (join N:N)
-        modelBuilder.Entity<StudentCourse>(e=>{
-            e.HasKey(sc=> new {sc.StudentId, sc.CourseId}); // PK Composta
-            e.HasOne(sc=> sc.Student)
-                .WithMany(s=> s.Enrollments)
-                .HasForeignKey(sc=>sc.CourseId)
+        //StudentCourse
+        modelBuilder.Entity<StudentCourse>()
+                .HasKey(sc => new { sc.StudentId, sc.CourseId });
+
+            modelBuilder.Entity<StudentCourse>()
+                .HasOne(sc => sc.Student)
+                .WithMany(s => s.StudentCourses)
+                .HasForeignKey(sc => sc.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            e.Property(sc=>sc.EnrolledAt).IsRequired();
-        });
+            modelBuilder.Entity<StudentCourse>()
+                .HasOne(sc => sc.Course)
+                .WithMany(c => c.StudentCourses)
+                .HasForeignKey(sc => sc.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
     }
 }
 
