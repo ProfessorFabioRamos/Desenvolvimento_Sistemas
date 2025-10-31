@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlite("Data Source=school.db"));
+    opt.UseSqlite("Data Source=escola.db"));
 
 var app = builder.Build();
 
@@ -153,112 +153,126 @@ async Task DeleteStudentAsync()
     Console.WriteLine("Estudante removido com sucesso.");
 }
 
-async Task CreateCourseAsync(){
-    Console.WriteLine("Nome do curso: ");
+async Task CreateCourseAsync()
+{
+    Console.Write("Nome do curso: ");
     var name = (Console.ReadLine() ?? "").Trim();
 
-    if(string.IsNullOrWhiteSpace(name)){
-        Console.WriteLine("Nome é obrigatório.");
-        return;
-    }
+    if (string.IsNullOrWhiteSpace(name)) { Console.WriteLine("Nome é obrigatório."); return; }
 
     using var db = new AppDbContext();
-    if(await db.Courses.AnyAsync(c=>c.Name == name)){
+    if (await db.Courses.AnyAsync(c => c.Name == name))
+    {
         Console.WriteLine("Curso já existe.");
         return;
     }
 
-    var course = new Course{Name = name};
+    var course = new Course { Name = name };
     db.Courses.Add(course);
     await db.SaveChangesAsync();
     Console.WriteLine($"Curso criado! Id: {course.Id}");
 }
 
-async Task EnrollStudentInCourseAsync(){
+async Task EnrollStudentInCourseAsync()
+{
     Console.Write("Id do aluno: ");
-    if(!int.TryParse(Console.ReadLine(), out var sid)){
-        Console.WriteLine("Id do aluno inválido.");
-        return;
-    }
+    if (!int.TryParse(Console.ReadLine(), out var sid)) { Console.WriteLine("Id inválido."); return; }
 
     Console.Write("Id do curso: ");
-    if(!int.TryParse(Console.ReadLine(), out var cid)){
-        Console.WriteLine("Id do curso inválido.");
-        return;
-    }
+    if (!int.TryParse(Console.ReadLine(), out var cid)) { Console.WriteLine("Id inválido."); return; }
 
     using var db = new AppDbContext();
 
-    var student = await db.Students.FindAsync(sid); 
-    var course = await db.Courses.FindAsync(cid); 
-    if(student is null || course is null){
-        Console.WriteLine("Aluno ou curso não encontrado");
+    // Mostra qual arquivo de banco está sendo usado (diagnóstico)
+    Console.WriteLine("DB Path: " + Path.GetFullPath("escola.db"));
+
+    // Verifica existência real no banco
+    var student = await db.Students.AsNoTracking().FirstOrDefaultAsync(s => s.Id == sid);
+    var course  = await db.Courses.AsNoTracking().FirstOrDefaultAsync(c => c.Id == cid);
+    Console.WriteLine($"Exists? Student({sid})={(student!=null)}, Course({cid})={(course!=null)}");
+
+    if (student is null || course is null)
+    {
+        Console.WriteLine("Aluno ou curso não encontrado. Operação cancelada.");
         return;
     }
-    var exists = await db.StudentCourses.AnyAsync(sc=>sc.StudentId ==sid && sc.CourseId == cid);
-    if(exists){
-        Console.WriteLine("Aluno já matriculado neste curso");
+
+    // Evita duplicidade
+    var already = await db.StudentCourses.AnyAsync(sc => sc.StudentId == sid && sc.CourseId == cid);
+    if (already)
+    {
+        Console.WriteLine("Aluno já está matriculado neste curso.");
         return;
     }
-    db.StudentCourses.Add(new StudentCourse{StudentId = sid, CourseId = cid});
-    await db.SaveChangesAsync();
-    Console.WriteLine($"Matriculado:{student.Name} no curso {course.Name}");
+
+    // Se quiser, “anexe” entidades para garantir tracking correto (não insere aluno/curso de novo)
+    db.Attach(new Student { Id = sid });
+    db.Attach(new Course  { Id = cid  });
+
+    db.StudentCourses.Add(new StudentCourse { StudentId = sid, CourseId = cid });
+
+    try
+    {
+        await db.SaveChangesAsync();
+        Console.WriteLine($"Matriculado com sucesso: {student.Name} -> {course.Name}");
+    }
+    catch (DbUpdateException ex)
+    {
+        Console.WriteLine("Falha ao salvar matrícula.");
+        Console.WriteLine("Inner: " + (ex.InnerException?.Message ?? ex.Message));
+    }
 }
-async Task ListCoursesWithStudentsAsync(){
+
+async Task ListCoursesWithStudentsAsync()
+{
     using var db = new AppDbContext();
-    //INNER JOIN
-    var rows = await(
-        from c in db.Courses
+
+    // INNER JOIN explícito (apenas cursos COM alunos)
+    var rows = await (
+        from c  in db.Courses
         join sc in db.StudentCourses on c.Id equals sc.CourseId
-        join s in db.Students on sc.StudentId equals s.Id
+        join s  in db.Students       on sc.StudentId equals s.Id
         orderby c.Name, s.Name
-        select new {Course = c.Name, Student = s.Name, s.Email}
+        select new { Course = c.Name, Student = s.Name, s.Email }
     ).ToListAsync();
 
-    if(rows.Count ==0){
-        Console.WriteLine("Nenhuma matrícula encontrada");
-        return;
-    }
+    if (rows.Count == 0) { Console.WriteLine("Nenhuma matrícula encontrada (INNER JOIN)."); return; }
 
-    string current = "";
-    foreach(var r in rows){
-        if(current != r.Course){
+    string? current = null;
+    foreach (var r in rows)
+    {
+        if (current != r.Course)
+        {
             current = r.Course;
             Console.WriteLine($"\nCurso: {current}");
-            Console.WriteLine(" Alunos:");
+            Console.WriteLine("  Alunos:");
         }
-        Console.WriteLine($"    -{r.Student} ({r.Email})");
+        Console.WriteLine($"    - {r.Student} ({r.Email})");
     }
     Console.WriteLine();
 }
 
-async Task ListStudentsByCourseAsync(){
-    Console.WriteLine("Id do Curso");
-    if(!int.TryParse(Console.ReadLine(), out var cid)){
-        Console.WriteLine("Id inválido.");
-        return;
-    }
+async Task ListStudentsByCourseAsync()
+{
+    Console.Write("Id do curso: ");
+    if (!int.TryParse(Console.ReadLine(), out var cid)) { Console.WriteLine("Id inválido."); return; }
 
     using var db = new AppDbContext();
-    var course = await db.Courses.FindAsync(cid);
-    if(course is null){
-        Console.WriteLine("Curso não encontrado.");
-        return;
-    }
 
-    var students = await(
+    var course = await db.Courses.FindAsync(cid);
+    if (course is null) { Console.WriteLine("Curso não encontrado."); return; }
+
+    var students = await (
         from sc in db.StudentCourses
-        join s in db.Students on sc.StudentId equals s.Id
-        where sc.CourseId ==cid
+        join s  in db.Students on sc.StudentId equals s.Id
+        where sc.CourseId == cid
         orderby s.Name
-        select new {s.Name, s.Email}
-        ).ToListAsync();
+        select new { s.Name, s.Email }
+    ).ToListAsync();
 
     Console.WriteLine($"\nCurso: {course.Name}");
-    if(students.Count ==0){
-        Console.WriteLine("  (sem alunos)");
-        return;
-    }
-    foreach(var st in students)
+    if (students.Count == 0) { Console.WriteLine("  (sem alunos)"); return; }
+
+    foreach (var st in students)
         Console.WriteLine($"  - {st.Name} ({st.Email})");
 }
