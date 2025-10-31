@@ -1,0 +1,35 @@
+<Window x:Class="CadastroProdutos.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CadastroProdutos"
+        mc:Ignorable="d"
+        Title="Cadastro de Produtos" Height="400" Width="500">
+    <Grid Margin = "10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height = "Auto"/>
+            <RowDefinition Height = "Auto"/>
+            <RowDefinition Height = "Auto"/>
+            <RowDefinition Height = "Auto"/>
+            <RowDefinition Height = "*"/>
+        </Grid.RowDefinitions>
+
+        <!--Formulario-->
+        <StackPanel Orientation = "Horizontal" Margin = "0 0 0 10">
+            <TextBox x:Name="txtName" Width="150" Margin="0 0 10 0" Text = "Nome"/>
+            <TextBox x:Name="txtCategory" Width="150" Margin="0 0 10 0" Text = "Categoria"/>
+            <TextBox x:Name="txtPrice" Width="60" Margin="0 0 10 0" Text = "Preço"/>
+            <TextBox x:Name="txtQuantity" Width="60" Margin="0 0 10 0" Text = "Quantidade"/>
+            <Button Content="Adicionar" Width="80" Click="Adicionar_Click"/>
+        </StackPanel>
+        <!--DataGrid-->>
+        <DataGrid x:Name="dgProducts" Grid.Row="5" AutoGenerateColumns="False" ItemSource = "{Binding}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header = "Nome" Binding = "{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header = "Categoria" Binding = "{Binding Category}" Width="*"/>
+                <DataGridTextColumn Header = "Preco" Binding = "{Binding Price}" Width="*"/>
+                <DataGridTextColumn Header = "Quantidade" Binding = "{Binding Quantity}" Width="*"/>
+            </DataGrid.Columns>
+    </Grid>
+</Window>
