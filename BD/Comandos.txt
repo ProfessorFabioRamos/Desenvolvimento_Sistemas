@@ -4,6 +4,8 @@ cd .\EscolaDB\  (utilizar nome personalizado)
 dotnet add package Microsoft.EntityFrameworkCore
 dotnet add package Microsoft.EntityFrameworkCore.Sqlite
 dotnet add package Microsoft.EntityFrameworkCore.Design
+// Adicionar biblioteca de API
+dotnet add package Swashbuckle.AspNetCore
 dotnet new tool-manifest
 dotnet tool install dotnet-ef
 
@@ -11,7 +13,6 @@ dotnet tool install dotnet-ef
 dotnet ef migrations add InitialCreate
 dotnet ef database update
 
-// Adicionar biblioteca de API
-dotnet add package Swashbuckle.AspNetCore
+
 
 dotnet run
