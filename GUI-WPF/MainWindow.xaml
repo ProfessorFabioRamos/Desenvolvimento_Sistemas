@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CadastroProdutos"
         mc:Ignorable="d"
-        Title="Cadastro de Produtos" Height="400" Width="500">
+        Title="Cadastro de Produtos" Height="450" Width="800">
     <Grid Margin = "10">
         <Grid.RowDefinitions>
             <RowDefinition Height = "Auto"/>
@@ -15,24 +15,26 @@
             <RowDefinition Height = "*"/>
         </Grid.RowDefinitions>
 
-        <!--Formulario-->
+        <!-- Formulario -->
         <StackPanel Orientation = "Horizontal" Margin = "0 0 0 10">
-            <TextBox x:Name="txtName" Width="150" Margin="0 0 10 0" Text = "Nome"/>
-            <TextBox x:Name="txtCategory" Width="150" Margin="0 0 10 0" Text = "Categoria"/>
-            <TextBox x:Name="txtPrice" Width="60" Margin="0 0 10 0" Text = "Preço"/>
-            <TextBox x:Name="txtQuantity" Width="60" Margin="0 0 10 0" Text = "Quantidade"/>
-            <Button Content="Adicionar" Width="80" Click="Adicionar_Click"/>
+            <TextBox x:Name="txtName" Width = "150" Margin = "0 0 10 0"/> 
+            <TextBox x:Name="txtCategory" Width = "150" Margin = "0 0 10 0"/>
+            <TextBox x:Name="txtPrice" Width = "150" Margin = "0 0 10 0"/>
+            <TextBox x:Name="txtQuantity" Width = "150" Margin = "0 0 10 0"/>
+            <Button Content="Adicionar" Click="Adicionar_Click" Width = "100"></Button>
         </StackPanel>
-        <!--DataGrid-->>
-        <DataGrid x:Name="dgProducts" Grid.Row="5" AutoGenerateColumns="False" ItemsSource = "{Binding}">
+
+        <!-- Data Grid -->
+        <DataGrid x:Name="dgProducts" Grid.Row = "2" AutoGenerateColumns = "False" ItemsSource = "{Binding}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header = "Nome" Binding = "{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header = "Categoria" Binding = "{Binding Category}" Width="*"/>
-                <DataGridTextColumn Header = "Preco" Binding = "{Binding Price}" Width="*"/>
-                <DataGridTextColumn Header = "Quantidade" Binding = "{Binding Quantity}" Width="*"/>
+                <DataGridTextColumn Header="Nome" Binding = "{Binding Name}" Width = "*" />
+                <DataGridTextColumn Header="Categoria" Binding = "{Binding Category}" Width = "*" />
+                <DataGridTextColumn Header="Preço" Binding = "{Binding Price}" Width = "*" />
+                <DataGridTextColumn Header="Quantidade" Binding = "{Binding Quantity}" Width = "*" />
             </DataGrid.Columns>
         </DataGrid>
-        <!--Botão de Remover-->
-        <Button Grid.Row="1" Content = "Remover Selecionado" Width = "160" HorizontalAligment = "Left" Click = "Remover_Click"/> 
+
+        <!-- Botão de Remover -->
+        <Button Grid.Row="1" Content="Remover Selecionado" Width="160" HorizontalAlignment="Left" Click="Remover_Click"></Button>
     </Grid>
 </Window>
