@@ -24,12 +24,13 @@
             <Button Content="Adicionar" Width="80" Click="Adicionar_Click"/>
         </StackPanel>
         <!--DataGrid-->>
-        <DataGrid x:Name="dgProducts" Grid.Row="5" AutoGenerateColumns="False" ItemSource = "{Binding}">
+        <DataGrid x:Name="dgProducts" Grid.Row="5" AutoGenerateColumns="False" ItemsSource = "{Binding}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header = "Nome" Binding = "{Binding Name}" Width="*"/>
                 <DataGridTextColumn Header = "Categoria" Binding = "{Binding Category}" Width="*"/>
                 <DataGridTextColumn Header = "Preco" Binding = "{Binding Price}" Width="*"/>
                 <DataGridTextColumn Header = "Quantidade" Binding = "{Binding Quantity}" Width="*"/>
             </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
