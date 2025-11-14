@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 
 using System.Collections.ObjectModel;
 using CadastroProdutos.Models;
+using CadastroProdutos.Data;
+using Microsoft.EntityFrameworkCore;
+
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -56,6 +59,19 @@ namespace CadastroProdutos{
                 _products.Remove(productSelected);
             } else {
                 MessageBox.Show("Selecione um produto!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void SalvarBanco_Click(object sender, RoutedEventArgs e){
+            using (var context = new AppDbContext()){
+                //Cria o banco se ele não existir
+                context.Database.EnsureCreated();
+                // Adiciona todos os produtos da lista ao context(banco)
+                context.Products.AddRange(_products);
+                //Salva o banco no produtos.db
+                context.SaveChanges();
+                //Caixa de mensagem em caso de sucesso
+                MessageBox.Show("Dados salvos com sucesso!", "Sucesso",MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }
