@@ -1,6 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
 
+lista_cadastro_clientes = [
+    "Nome: Bruno Costa, Idade: 54, Email: bruno.c@email.com",
+    "Nome: Carla Fernandes, Idade: 27, Email: carla.f@email.com",
+    "Nome: Francisco Mendes, Idade: 32, Email: francisco.m@email.com",
+    "Nome: Eliz Silva, Idade: 19, Email: eliz.s@email.com"
+]
+
+def show_data():
+    # Modo normal para poder editar
+    caixa_texto.config(state = "normal")
+    # Limpar a caixa antes de inserir dados da linha 1 até o final
+    caixa_texto.delete("1.0", tk.END)
+    # Junta todos os elementos da lista mas adiciona uma quebra de linha entre eles
+    texto_formatado = "\n".join(lista_cadastro_clientes)
+    # Insere texto formatado na caixa (END=início)
+    caixa_texto.insert(tk.END, texto_formatado)
+    # Desliga aopção de edição
+    #caixa_texto.config(state = "disabled")
+
 def change_slider(valor): #valor = string
     valor_float = f"{float(valor):.0f}"
     label_valor_slider.config(text=f"Valor: {valor_float}")
@@ -11,8 +30,8 @@ def select_combo(event):
         label_valor_combo.config(text = f"Estado Civil: {valor}")
 
 root = tk.Tk()
-root.title("Exemplo de Abas")
-root.geometry("450x300")
+root.title("Exemplo de Abas e Widgets")
+root.geometry("450x320")
 
 # Criar o notebook (conteiner de abas)
 notebook = ttk.Notebook(root)
@@ -43,6 +62,17 @@ label_aba_2 = ttk.Label(aba2, text="Área de Consulta")
 label_aba_2.pack(padx =20, pady =20)
 btn_buscar = ttk.Button(aba2, text="Buscar")
 btn_buscar.pack(pady =10)
+btn_buscar.config(command=show_data)
+# Caixa de texto que recebe um cadastro
+caixa_texto = tk.Text(
+    aba2,
+    height= 20,
+    width=60,
+    wrap="word",
+    font = ("Arial",10)
+)
+caixa_texto.pack(pady=20, fill="both", expand=True)
+caixa_texto.config(state= "disabled")
 
 # Varável de controle Boolean
 var_check = tk.BooleanVar()
