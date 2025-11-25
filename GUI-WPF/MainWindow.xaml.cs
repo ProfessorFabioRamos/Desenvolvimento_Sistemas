@@ -62,7 +62,20 @@ namespace CadastroProdutos{
 
         private void Remover_Click(object sender, RoutedEventArgs e){
             if(dgProducts.SelectedItem is Product productSelected){
-                _products.Remove(productSelected);
+                var result = MessageBox.Show($"Deseja realmente excluir o produto: {productSelected.Name}?",
+                "Confirmar exclusão", 
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+                if(result == MessageBoxResult.Yes){
+                    if(productSelected.Id > 0){
+                        using(var context = new AppDbContext()){
+                            context.Products.Remove(productSelected);
+                            context.SaveChanges();
+                        }
+                    }
+                    _products.Remove(productSelected);
+                }
             } else {
                 MessageBox.Show("Selecione um produto!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
@@ -73,7 +86,7 @@ namespace CadastroProdutos{
                 // Cria o banco se ele não existir
                 context.Database.EnsureCreated();
                 //Adiciona todos os produtos da lista ao context(banco)
-                context.Products.AddRange(_products);
+                context.Products.UpdateRange(_products);
                 //Salva o banco no produtos.db
                 context.SaveChanges();
                 // Caixa de mensagem em caso de sucesso
