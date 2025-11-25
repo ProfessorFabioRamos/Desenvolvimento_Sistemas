@@ -9,12 +9,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-
 using System.Collections.ObjectModel;
 using CadastroProdutos.Models;
 using CadastroProdutos.Data;
 using Microsoft.EntityFrameworkCore;
-
+using System.Linq;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -23,14 +22,21 @@ using Microsoft.EntityFrameworkCore;
 namespace CadastroProdutos{
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Product> _products;
+        private ObservableCollection<Product> _products = new ObservableCollection<Product>();
         public MainWindow()
         {
             InitializeComponent();
-            _products = new ObservableCollection<Product>();
+            LoadProductsFromDatabase();
             dgProducts.ItemsSource = _products;
         }
 
+        private void LoadProductsFromDatabase(){
+            using (var context = new AppDbContext()){
+                context.Database.EnsureCreated();
+                var productsFromDb = context.Products.ToList();
+                _products = new ObservableCollection<Product>(productsFromDb);
+            }
+        }
         private void Adicionar_Click(object sender, RoutedEventArgs e){
             float price = float.TryParse(txtPrice.Text, out var p) ? p : 0;
             int qty = int.TryParse(txtQuantity.Text, out var q) ? q : 0;
@@ -64,14 +70,15 @@ namespace CadastroProdutos{
 
         private void SalvarBanco_Click(object sender, RoutedEventArgs e){
             using (var context = new AppDbContext()){
-                //Cria o banco se ele não existir
+                // Cria o banco se ele não existir
                 context.Database.EnsureCreated();
-                // Adiciona todos os produtos da lista ao context(banco)
+                //Adiciona todos os produtos da lista ao context(banco)
                 context.Products.AddRange(_products);
                 //Salva o banco no produtos.db
                 context.SaveChanges();
-                //Caixa de mensagem em caso de sucesso
-                MessageBox.Show("Dados salvos com sucesso!", "Sucesso",MessageBoxButton.OK, MessageBoxImage.Information);
+                // Caixa de mensagem em caso de sucesso
+                MessageBox.Show("Dados salvos com sucesso!", "Sucesso",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }
